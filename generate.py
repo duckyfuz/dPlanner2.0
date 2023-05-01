@@ -1,6 +1,6 @@
 import calendar
 from dPlanner import Day
-from helpers import create_cal, load_data, create_points_and_sort, fill_cal, find_variance
+from helpers import *
 
 MM = 5
 YY = 2023
@@ -22,22 +22,17 @@ def main():
             cal[unavailable_date - 1].remove_from_avail(person)
 
     # Create points dictionary
-    points, ascending_points = create_points_and_sort(people, data)
-
-    # Fill cal and update 
-    fill_cal(cal, ascending_points, points)
-    # Update ascending_points
-    ascending_points = sorted(points.items(), key=lambda x:x[1])
+    points = create_points(people, data)
 
     # Calc. variance (aim for a variance of 0)
     variance = find_variance(points)
-    
-    for person in reversed(ascending_points):
-        print(person)
+
+    # Fill cal and update ascending_points
+    # fill_cal(cal, ascending_points, points)
+    # ascending_points = sorted(points.items(), key=lambda x:x[1])
 
     # for day in cal:
     #     print(day.pax)
-
     # print(points)
 
 

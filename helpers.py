@@ -98,21 +98,21 @@ def load_data(filename):
     return list(data.keys()), data
 
 
-def create_points_and_sort(people, data):
+def create_points(people, data):
     points = {}
     for person in people:
         points[person] = data[person]["points"]
-    return points, sorted(points.items(), key=lambda x:x[1])
+    return points
 
      
-def fill_cal(cal, ascending_points, points):
-    for date in cal:
-        for pax in ascending_points:
-            incoming = pax[0]
-            if date.schedue(incoming, points, cal):
-                print(incoming, date.rwd, points[incoming])
-                break
-        ascending_points = sorted(points.items(), key=lambda x:x[1])
+# def fill_cal(cal, ascending_points, points):
+#     for date in cal:
+#         for pax in ascending_points:
+#             incoming = pax[0]
+#             if date.schedue(incoming, points, cal):
+#                 print(incoming, date.rwd, points[incoming])
+#                 break
+#         ascending_points = sorted(points.items(), key=lambda x:x[1])
 
 
 def find_variance(points):
