@@ -46,14 +46,14 @@ def load_data(filename):
 
             # Split row[3] into list values and convert the str values into int values
             unavail = list(row[3].split("/"))
-            unavailInt = []
+            unavailInt = set()
             for str in unavail:
                 if "-" in str:
                     start, end = str.split("-")
                     for i in range (int(start), int(end) + 1):
-                        unavailInt.append(i)
+                        unavailInt.add(i)
                     continue
-                unavailInt.append(int(str))
+                unavailInt.add(int(str))
 
         clear = 0
         if int(row[2]) > 0:

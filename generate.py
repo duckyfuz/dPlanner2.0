@@ -2,7 +2,7 @@ import calendar
 from dPlanner import Day
 from helpers import create_cal, load_data
 
-MM = 6
+MM = 5
 YY = 2023
 
 FILENAME = "real_MAY.csv"
@@ -21,8 +21,8 @@ def main():
         for unavail_date in dict[person]["unavail"]:
             cal[unavail_date - 1].remove_from_avail(person)
 
-    for i in cal:
-        print(i)
+    # for i in cal:
+    #     print(i)
 
 
 
