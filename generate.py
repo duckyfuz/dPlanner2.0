@@ -5,21 +5,24 @@ from helpers import create_cal, load_data
 MM = 6
 YY = 2023
 
-FILENAME = "data/may.csv"
-OUTPUT = "data/output.csv"
+FILENAME = "real_MAY.csv"
+OUTPUT = "real_MAY_output.csv"
     
 def main():
     
-    # Create a list of Day-type objects
-    cal = create_cal(YY, MM, Day)
-
     # Load data from FILENAME
     people, dict = load_data(FILENAME)
 
-    # Populate date.unvail for each date in cal
+    # Create a list of Day-type objects
+    cal = create_cal(YY, MM, Day, people)
+
+    # Populate date.avail for each date in cal
     for person in dict:
         for unavail_date in dict[person]["unavail"]:
-            cal[unavail_date - 1].add_to_unavail(person)
+            cal[unavail_date - 1].remove_from_avail(person)
+
+    for i in cal:
+        print(i)
 
 
 

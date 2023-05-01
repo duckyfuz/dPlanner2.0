@@ -1,11 +1,11 @@
-import calendar
+import copy
 
 
 class Day:
-    def __init__(self, date, rwd, pax = None, extra = False):
+    def __init__(self, date, rwd, people, pax = None, extra = False):
         self.date, self.pax,  = date, pax
         self.rwd, self.extra = rwd, extra
-        self.unavail = []
+        self.avail = copy.deepcopy(people)
 
     def __eq__(self, other):
         if not self.date == other.date:
@@ -24,6 +24,7 @@ class Day:
         On Duty: {self.pax}
         Point(s): {self.rwd}
         Extra: {self.extra}
+        Avail: {self.avail}
       """  
             
     def swap(self, incoming):
@@ -32,5 +33,5 @@ class Day:
     def withdraw(self, amount):
         self.balance -= amount
 
-    def add_to_unavail(self, pax):
-        self.unavail.append(pax)
+    def remove_from_avail(self, pax):
+        self.avail.remove(pax)
