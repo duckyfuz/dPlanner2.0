@@ -28,20 +28,6 @@ def is_valid(cal, date, incoming):
     return True
 
 
-# def create_cal(YY, MM, Day, people):
-#     # Create a Day class for each day in the calender
-#     cal = []
-#     for week in calendar.monthcalendar(YY, MM):
-#         i = 0
-#         for date in week:
-#             if date == 0:
-#                 continue
-#             rwd = 1 if i in [0,1,2,3] else 1.5 if i == 4 else 2
-#             cal.append(Day(date, rwd, people))
-#             i += 1
-#     return(cal)
-
-
 def load_data(filename):
     """
     Takes filename as input and returns a list of people and a dictionary with keys "unavailable", "points", 'to_clear' and 'leftover_duties'
@@ -96,34 +82,3 @@ def load_data(filename):
     f.close()
 
     return list(data.keys()), data
-
-
-def create_points(people, data):
-    points = {}
-    for person in people:
-        points[person] = data[person]["points"]
-    return points
-
-     
-# def fill_cal(cal, ascending_points, points):
-#     for date in cal:
-#         for pax in ascending_points:
-#             incoming = pax[0]
-#             if date.schedue(incoming, points, cal):
-#                 print(incoming, date.rwd, points[incoming])
-#                 break
-#         ascending_points = sorted(points.items(), key=lambda x:x[1])
-
-
-def find_variance(points):
-    data = []
-    for person in points:
-       data.append(points[person])
-
-    n = len(data)
-    mean = sum(data) / n
-
-    deviations = [(x - mean) ** 2 for x in data]
-    variance = sum(deviations) / n
-    
-    return variance

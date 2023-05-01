@@ -13,16 +13,15 @@ def main():
     # Load data from FILENAME
     people, data = load_data(FILENAME)
 
-    # Create a list of Day-type objects and remove unavail pax
+    # Create Month-object
     month = Month(YY, MM, Day, people, data)
 
-    # Create points dictionary
-    points = create_points(people, data)
-
-    print(month.cal)
-
-    # Calc. variance (aim for a variance of 0)
-    variance = find_variance(points)
+    incoming = "2LT KENNETH"
+    print(month.points)
+    print(month.cal[0].schedue(incoming, month.points, month.cal))
+    print(month.points)
+    
+    print(month.find_variance())
 
     # Find all possible solutions
     # solutions = solve(month, 1)
