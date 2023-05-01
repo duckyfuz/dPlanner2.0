@@ -17,55 +17,34 @@ def main():
     # Create Month-object
     month = Month(YY, MM, Day, people, data)
 
+    # dates = get_dates(month.cal)
+
+    # random.shuffle(dates)
+    # for date in dates:
+    #     for incoming in list(month.points.keys()):
+    #         # print(date, incoming)
+    #         if month.cal[date - 1].swap(incoming, month) == False:
+    #             continue
+    #         # print(month.points)
+    #         break
+
+    # print(month.points)
+
     # Fill up all 2 pointers
     one_pointers, two_pointers, one_half_pointers = sort_dates(month.cal)
-
-    for date in two_pointers:
-        for incoming in list(month.points.keys()):
-            print(date, incoming)
-            if month.cal[date - 1].swap(incoming, month) == False:
-                continue
-            print(month.points)
+    count = 0
+    max_variance = 0
+    while True:
+        fill_by_points(one_pointers, two_pointers,one_half_pointers, month)
+        count += 1
+        if count == 100:
+            max_variance += 0.0001
+            print(f"Increasing max_variance to {max_variance:.4g}")
+            count = 0
+        if month.find_variance() <= max_variance:
             break
 
-    for date in one_half_pointers:
-        for incoming in list(month.points.keys()):
-            print(date, incoming)
-            if month.cal[date - 1].swap(incoming, month) == False:
-                continue
-            print(month.points)
-            break
-
-    for date in one_pointers:
-        for incoming in list(month.points.keys()):
-            print(date, incoming)
-            if month.cal[date - 1].swap(incoming, month) == False:
-                continue
-            print(month.points)
-            break
-
-    print(month.points)
-
-    # print(month.cal)
-
-
-# def solve(month, date = 1):
-
-#     if date > month.len:
-#         SOLUTIONS.append(month)
-#         # print("Current Solutions Repo:")
-
-#         # print(month.cal)
-#         # print(SOLUTIONS)
-#         print(SOLUTIONS)
-#         return
-    
-#     for incoming in month.cal[date - 1].avail:
-#         month = copy.deepcopy(month)
-#         print(month)
-#         if month.cal[date - 1].swap(incoming, month.points, month.cal) == False:
-#             continue
-#         solve(month, date + 1)
+    print(month.points, month.find_variance())
 
 
 if __name__ == "__main__":

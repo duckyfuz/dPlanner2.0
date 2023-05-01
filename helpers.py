@@ -96,3 +96,24 @@ def sort_dates(cal):
         else:
             one_half_pointers.append(day.date)
     return one_pointers, two_pointers, one_half_pointers
+
+
+def fill_by_points(one_pointers, two_pointers, one_half_pointers, month):
+    random.shuffle(one_pointers)
+    random.shuffle(two_pointers)
+    random.shuffle(one_half_pointers)
+    for date in two_pointers:
+        for incoming in list(month.points.keys()):
+            if month.cal[date - 1].swap(incoming, month) == False:
+                continue
+            break
+    for date in one_half_pointers:
+        for incoming in list(month.points.keys()):
+            if month.cal[date - 1].swap(incoming, month) == False:
+                continue
+            break
+    for date in one_pointers:
+        for incoming in list(month.points.keys()):
+            if month.cal[date - 1].swap(incoming, month) == False:
+                continue
+            break

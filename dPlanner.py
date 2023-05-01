@@ -71,17 +71,6 @@ class Day:
         month.points[incoming] += self.rwd
         month.points = dict(sorted(month.points.items(), key=lambda item: item[1]))
         return True
-    
-    # def schedue(self, incoming, points, cal):
-    #     if not is_valid(cal, self.date, incoming):
-    #         return False
-    #     # if self.pax != None:
-    #     #     print(incoming, points, self.date)
-    #     #     raise Exception(f"{self.pax} is schedued for this date. Use .swap() instead.")
-    #     self.pax = incoming
-    #     points[incoming] += self.rwd
-    #     print(incoming, self.date)
-    #     return True
 
     def remove_from_avail(self, pax):
         self.avail.remove(pax)
