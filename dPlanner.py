@@ -1,5 +1,5 @@
 import copy
-
+from helpers import is_valid
 
 class Day:
     def __init__(self, date, rwd, people, pax = None, extra = False):
@@ -27,11 +27,29 @@ class Day:
         Avail: {self.avail}
       """  
             
-    def swap(self, incoming):
-        self.pax == incoming
+    def swap(self, incoming, points, cal):
+        if not is_valid(cal, self.date, incoming):
+            return False
         
-    def withdraw(self, amount):
-        self.balance -= amount
+        outgoing = self.pax
+        self.pax = incoming
+
+        points[outgoing] -= self.rwd
+        points[incoming] += self.rwd
+
+        return True
+    
+    def schedue(self, incoming, points, cal):
+        if not is_valid(cal, self.date, incoming):
+            return False
+        
+        if self.pax != None:
+            raise Exception(f"{self.pax} is schedued for this date. Use .swap() instead.")
+
+        self.pax = incoming
+        points[incoming] += self.rwd
+    
+        return True
 
     def remove_from_avail(self, pax):
         self.avail.remove(pax)
