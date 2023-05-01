@@ -7,6 +7,7 @@ YY = 2023
 
 FILENAME = "real_MAY.csv"
 OUTPUT = "real_MAY_output.csv"
+SOLUTIONS = []
     
 def main():
     
@@ -16,40 +17,55 @@ def main():
     # Create Month-object
     month = Month(YY, MM, Day, people, data)
 
-    incoming = "2LT KENNETH"
+    # Fill up all 2 pointers
+    one_pointers, two_pointers, one_half_pointers = sort_dates(month.cal)
+
+    for date in two_pointers:
+        for incoming in list(month.points.keys()):
+            print(date, incoming)
+            if month.cal[date - 1].swap(incoming, month) == False:
+                continue
+            print(month.points)
+            break
+
+    for date in one_half_pointers:
+        for incoming in list(month.points.keys()):
+            print(date, incoming)
+            if month.cal[date - 1].swap(incoming, month) == False:
+                continue
+            print(month.points)
+            break
+
+    for date in one_pointers:
+        for incoming in list(month.points.keys()):
+            print(date, incoming)
+            if month.cal[date - 1].swap(incoming, month) == False:
+                continue
+            print(month.points)
+            break
+
     print(month.points)
-    print(month.cal[0].schedue(incoming, month.points, month.cal))
-    print(month.points)
+
+    # print(month.cal)
+
+
+# def solve(month, date = 1):
+
+#     if date > month.len:
+#         SOLUTIONS.append(month)
+#         # print("Current Solutions Repo:")
+
+#         # print(month.cal)
+#         # print(SOLUTIONS)
+#         print(SOLUTIONS)
+#         return
     
-    print(month.find_variance())
-
-    # Find all possible solutions
-    # solutions = solve(month, 1)
-
-    # for day in cal:
-    #     print(day.pax)
-    # print(points)
-
-
-# def solve(month, date, initial = True):
-#     if initial == True:
-#         solutions = []
-#     initial = False
-
-#     if date > len(cal):
-#         print("last")
-#         return cal
-
-#     for person in cal[date - 1].avail:
-#         cal[date - 1] 
-#         cal = copy.deepcopy(cal)
-#         solve(cal, date + 1)
-
-#     print(cal[date - 1])
-#     print(cal[date - 1].avail)
-
-
-#     return solutions
+#     for incoming in month.cal[date - 1].avail:
+#         month = copy.deepcopy(month)
+#         print(month)
+#         if month.cal[date - 1].swap(incoming, month.points, month.cal) == False:
+#             continue
+#         solve(month, date + 1)
 
 
 if __name__ == "__main__":

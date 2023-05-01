@@ -1,5 +1,6 @@
 import copy
 import calendar
+import random
 from helpers import is_valid
 
 
@@ -28,6 +29,7 @@ class Month:
         points = {}
         for person in people:
             points[person] = data[person]["points"]
+        points = dict(sorted(points.items(), key=lambda item: item[1]))
         return points
     
     def find_variance(self):
@@ -39,6 +41,18 @@ class Month:
         deviations = [(x - mean) ** 2 for x in data]
         variance = sum(deviations) / n
         return variance
+    
+    def __str__(self):
+      return f"""
+        Points: {self.points}
+        Variance: {self.find_variance()}
+      """  
+    
+    def __repr__(self):
+      return f"""
+        Points: {self.points}
+        Variance: {self.find_variance()}
+      """  
 
 
 class Day:
@@ -46,6 +60,43 @@ class Day:
         self.date, self.pax,  = date, pax
         self.rwd, self.extra = rwd, extra
         self.avail = copy.deepcopy(people)
+            
+    def swap(self, incoming, month):
+        if not is_valid(month.cal, self.date, incoming):
+            return False
+        if self.pax != None:
+            outgoing = self.pax
+            month.points[outgoing] -= self.rwd
+        self.pax = incoming
+        month.points[incoming] += self.rwd
+        month.points = dict(sorted(month.points.items(), key=lambda item: item[1]))
+        return True
+    
+    # def schedue(self, incoming, points, cal):
+    #     if not is_valid(cal, self.date, incoming):
+    #         return False
+    #     # if self.pax != None:
+    #     #     print(incoming, points, self.date)
+    #     #     raise Exception(f"{self.pax} is schedued for this date. Use .swap() instead.")
+    #     self.pax = incoming
+    #     points[incoming] += self.rwd
+    #     print(incoming, self.date)
+    #     return True
+
+    def remove_from_avail(self, pax):
+        self.avail.remove(pax)
+
+    def __str__(self):
+      return f"""
+        Date: {self.date} | On Duty: {self.pax} | Point(s): {self.rwd} | Extra: {self.extra}
+        {self.avail}
+      """  
+    
+    def __repr__(self):
+      return f"""
+        Date: {self.date} | On Duty: {self.pax} | Point(s): {self.rwd} | Extra: {self.extra}
+        {self.avail}
+      """  
 
     def __eq__(self, other):
         if not self.date == other.date:
@@ -57,42 +108,3 @@ class Day:
         if not self.extra == other.extra:
             return False
         return True
-            
-    def swap(self, incoming, points, cal):
-        if not is_valid(cal, self.date, incoming):
-            return False
-        outgoing = self.pax
-        self.pax = incoming
-        points[outgoing] -= self.rwd
-        points[incoming] += self.rwd
-        return True
-    
-    def schedue(self, incoming, points, cal):
-        if not is_valid(cal, self.date, incoming):
-            return False
-        if self.pax != None:
-            raise Exception(f"{self.pax} is schedued for this date. Use .swap() instead.")
-        self.pax = incoming
-        points[incoming] += self.rwd
-        return True
-
-    def remove_from_avail(self, pax):
-        self.avail.remove(pax)
-
-    def __str__(self):
-      return f"""
-        Date: {self.date}
-        On Duty: {self.pax}
-        Point(s): {self.rwd}
-        Extra: {self.extra}
-        Avail: {self.avail}
-      """  
-    
-    def __repr__(self):
-      return f"""
-        Date: {self.date}
-        On Duty: {self.pax}
-        Point(s): {self.rwd}
-        Extra: {self.extra}
-        Avail: {self.avail}
-      """  

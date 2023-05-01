@@ -82,3 +82,17 @@ def load_data(filename):
     f.close()
 
     return list(data.keys()), data
+
+
+def sort_dates(cal):
+    two_pointers = []
+    one_half_pointers = []
+    one_pointers = []
+    for day in cal:
+        if day.rwd == 1:
+            one_pointers.append(day.date)
+        elif day.rwd == 2:
+            two_pointers.append(day.date)
+        else:
+            one_half_pointers.append(day.date)
+    return one_pointers, two_pointers, one_half_pointers
