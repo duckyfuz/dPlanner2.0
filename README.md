@@ -10,6 +10,10 @@
 ## Background:
 This program was created to automate the process of creating a duty list, under the assumption that ONE person must be schedued for each day.  
 
+Version 2.0 features a different algorithm from [V1.0](https://github.com/duckyfuz/dPlanner).  
+Mainly to fix the issue of edge cases that completely halt the program.  
+Also to clean up the code.
+
 Doing duty rewards one with points, and the amount of points awarded depends on the type of day it is.
 
 ### Points System:
