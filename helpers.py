@@ -10,7 +10,7 @@ def create_cal(YY, MM, Day, people):
         for date in week:
             if date == 0:
                 continue
-            rwd = 1 if i in [1,2,3,4] else 1.5 if i == 5 else 2
+            rwd = 1 if i in [0,1,2,3] else 1.5 if i == 4 else 2
             cal.append(Day(date, rwd, people))
             i += 1
     return(cal)
@@ -48,6 +48,11 @@ def load_data(filename):
             unavail = list(row[3].split("/"))
             unavailInt = []
             for str in unavail:
+                if "-" in str:
+                    start, end = str.split("-")
+                    for i in range (int(start), int(end) + 1):
+                        unavailInt.append(i)
+                    continue
                 unavailInt.append(int(str))
 
         clear = 0
