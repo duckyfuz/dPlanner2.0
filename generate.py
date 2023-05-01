@@ -1,5 +1,5 @@
-import calendar
-from dPlanner import Day
+import copy
+from dPlanner import Month, Day
 from helpers import *
 
 MM = 5
@@ -13,27 +13,44 @@ def main():
     # Load data from FILENAME
     people, data = load_data(FILENAME)
 
-    # Create a list of Day-type objects
-    cal = create_cal(YY, MM, Day, people)
-
-    # Populate date.avail for each date in cal
-    for person in data:
-        for unavailable_date in data[person]["unavailable"]:
-            cal[unavailable_date - 1].remove_from_avail(person)
+    # Create a list of Day-type objects and remove unavail pax
+    month = Month(YY, MM, Day, people, data)
 
     # Create points dictionary
     points = create_points(people, data)
 
+    print(month.cal)
+
     # Calc. variance (aim for a variance of 0)
     variance = find_variance(points)
 
-    # Fill cal and update ascending_points
-    # fill_cal(cal, ascending_points, points)
-    # ascending_points = sorted(points.items(), key=lambda x:x[1])
+    # Find all possible solutions
+    # solutions = solve(month, 1)
 
     # for day in cal:
     #     print(day.pax)
     # print(points)
+
+
+# def solve(month, date, initial = True):
+#     if initial == True:
+#         solutions = []
+#     initial = False
+
+#     if date > len(cal):
+#         print("last")
+#         return cal
+
+#     for person in cal[date - 1].avail:
+#         cal[date - 1] 
+#         cal = copy.deepcopy(cal)
+#         solve(cal, date + 1)
+
+#     print(cal[date - 1])
+#     print(cal[date - 1].avail)
+
+
+#     return solutions
 
 
 if __name__ == "__main__":

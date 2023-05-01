@@ -1,5 +1,29 @@
 import copy
+import calendar
 from helpers import is_valid
+
+
+class Month:
+    def __init__(self, YY, MM, Day, people, data):
+        # Create a Day class for each day in the calender
+        self.cal = []
+        self.point = {}
+        for week in calendar.monthcalendar(YY, MM):
+            i = 0
+            for date in week:
+                if date == 0:
+                    continue
+                rwd = 1 if i in [0,1,2,3] else 1.5 if i == 4 else 2
+                self.cal.append(Day(date, rwd, people))
+                i += 1
+        self.len = len(self.cal)
+        self.populate_avail(data)
+
+    def populate_avail(self, data):
+        for person in data:
+            for unavailable_date in data[person]["unavailable"]:
+                self.cal[unavailable_date - 1].remove_from_avail(person)
+
 
 class Day:
     def __init__(self, date, rwd, people, pax = None, extra = False):
@@ -19,6 +43,15 @@ class Day:
         return True
     
     def __str__(self):
+      return f"""
+        Date: {self.date}
+        On Duty: {self.pax}
+        Point(s): {self.rwd}
+        Extra: {self.extra}
+        Avail: {self.avail}
+      """  
+    
+    def __repr__(self):
       return f"""
         Date: {self.date}
         On Duty: {self.pax}
