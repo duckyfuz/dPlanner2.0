@@ -1,4 +1,4 @@
-import calendar
+import copy
 import csv
 import random
 
@@ -144,3 +144,43 @@ def calibrate(month):
                 break
         if swapped == True:
             break
+
+
+def find_max_variance(sorted, month, SOLUTIONS):
+    max_variance = 0
+    count = 0
+    while True:
+        fill_duties(sorted, month)
+        count += 1
+        if count == 10:
+            max_variance += 0.01
+            count = 0
+        if month.find_variance() <= max_variance:
+            break
+    max_variance = month.find_variance()
+    SOLUTIONS[max_variance] = [copy.deepcopy(month)]
+
+    print(f"max_variance set at {max_variance:.3g}")
+    return(max_variance)
+
+
+def find_solution(sorted, month, SOLUTIONS, max_variance):
+    while input("Press Enter: ") in ["Y", "y", ""]:
+        while True:
+            fill_duties(sorted, month)
+            if month.find_variance() <= max_variance:
+                max_variance = month.find_variance()
+
+                try:
+                    SOLUTIONS[month.find_variance()]
+                except KeyError:
+                    SOLUTIONS[month.find_variance()] = []
+
+                month_copy = copy.deepcopy(month)
+
+                if month_copy in SOLUTIONS[month.find_variance()]:
+                    print("Duplicate found")
+                else:
+                    print(f"New solution found! \nmax_variance set at {max_variance:.3g}")
+                    SOLUTIONS[month.find_variance()].append(month_copy)
+                    break
