@@ -143,4 +143,4 @@ def calibrate(month):
             if swapped == True:
                 break
         if swapped == True:
-                break
+            break

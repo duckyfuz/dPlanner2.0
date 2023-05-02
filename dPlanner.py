@@ -53,6 +53,15 @@ class Month:
         Points: {self.points}
         Variance: {self.find_variance()}
       """  
+    
+    def __eq__(self, other):
+        days = len(self.cal)
+        if days != len(other.cal):
+            return False
+        for i in range(days):
+            if self.cal[i] != other.cal[i]:
+                return False
+        return True
 
 
 class Day:
