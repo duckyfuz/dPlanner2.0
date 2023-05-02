@@ -85,9 +85,7 @@ def load_data(filename):
 
 
 def sort_dates(cal):
-    two_pointers = []
-    one_half_pointers = []
-    one_pointers = []
+    two_pointers, one_half_pointers, one_pointers = [], [], []
     for day in cal:
         if day.rwd == 1:
             one_pointers.append(day.date)
@@ -95,10 +93,11 @@ def sort_dates(cal):
             two_pointers.append(day.date)
         else:
             one_half_pointers.append(day.date)
-    return one_pointers, two_pointers, one_half_pointers
+    return [one_pointers, two_pointers, one_half_pointers]
 
 
-def fill_by_points(one_pointers, two_pointers, one_half_pointers, month):
+def fill_duties(sorted, month):
+    one_pointers, two_pointers, one_half_pointers = sorted
     random.shuffle(one_pointers)
     random.shuffle(two_pointers)
     random.shuffle(one_half_pointers)
@@ -117,3 +116,31 @@ def fill_by_points(one_pointers, two_pointers, one_half_pointers, month):
             if month.cal[date - 1].swap(incoming, month) == False:
                 continue
             break
+
+    # Calibrate
+    for _ in range(100):
+        calibrate(month)
+
+
+def calibrate(month):
+    for outgoing in reversed(list(month.points.keys())):
+        outgoing_duties = []
+        for day in month.cal:
+            if day.pax != outgoing:
+                continue
+            if day.extra == True:
+                continue
+            outgoing_duties.append(day.date)
+        random.shuffle(outgoing_duties)
+        swapped = False
+        for outgoing_duty in outgoing_duties:
+            for incoming in list(month.points.keys()):
+                if month.cal[outgoing_duty - 1].swap(incoming, month) == False:
+                    continue
+                else: 
+                    swapped = True
+                    break
+            if swapped == True:
+                break
+        if swapped == True:
+                break
