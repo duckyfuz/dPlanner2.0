@@ -68,7 +68,7 @@ def load_data(filename):
                     to_clear = int(input(f"{row[0]} has {row[2]} extra(s). How many to to_clear this month? "))
                 except:
                     continue
-                if to_clear < 0:
+                if to_clear < 0 or to_clear > int(row[2]):
                     continue
                 break
         
@@ -84,7 +84,7 @@ def load_data(filename):
     return list(data.keys()), data
 
 
-def sort_dates(cal):
+def sort_dates(cal): # ADD PUBLIC HOL INPUT PORTION
     two_pointers, one_half_pointers, one_pointers = [], [], []
     for day in cal:
         if day.rwd == 1:
@@ -96,11 +96,38 @@ def sort_dates(cal):
     return [one_pointers, two_pointers, one_half_pointers]
 
 
-def fill_duties(sorted, month):
+def fill_duties(sorted, month, data):
     one_pointers, two_pointers, one_half_pointers = sorted
     random.shuffle(one_pointers)
     random.shuffle(two_pointers)
     random.shuffle(one_half_pointers)
+
+    extras = {}
+    total_extras = 0
+    for pax in data:
+        if data[pax]["to_clear"] == 0 and data[pax]["leftover_duties"] == 0:
+            continue
+        extras[pax] = [data[pax]["to_clear"], data[pax]["leftover_duties"]]
+        total_extras += data[pax]["to_clear"]
+
+    for loser in extras:
+        for i in range(extras[loser][0]):
+            for date in two_pointers:
+                if month.cal[date - 1].swap(loser, month) == True:
+                    month.cal[date - 1].convert_to_extra(loser, month)
+                    break
+
+    # for loser in extras:
+    #     for i in range(extras[loser][0]):
+    #         for date in two_pointers:
+    #             if month.cal[date - 1].swap(loser, month) == True:
+    #                 month.cal[date - 1].convert_to_extra(loser, month)
+    #                 print("HELOO")
+    #                 extras[loser][0] -= 1
+    #                 print("HELOO")
+    #                 break
+    # print(extras)
+
     for date in two_pointers:
         for incoming in list(month.points.keys()):
             if month.cal[date - 1].swap(incoming, month) == False:
@@ -146,41 +173,43 @@ def calibrate(month):
             break
 
 
-def find_max_variance(sorted, month, SOLUTIONS):
+def find_max_variance(sorted, month, SOLUTIONS, data):
     max_variance = 0
     count = 0
     while True:
-        fill_duties(sorted, month)
+        clean_month = copy.deepcopy(month)
+        fill_duties(sorted, clean_month, data)
         count += 1
         if count == 10:
             max_variance += 0.01
             count = 0
-        if month.find_variance() <= max_variance:
+        if clean_month.find_variance() <= max_variance:
             break
-    max_variance = month.find_variance()
-    SOLUTIONS[max_variance] = [copy.deepcopy(month)]
+    max_variance = clean_month.find_variance()
+    SOLUTIONS[max_variance] = [copy.deepcopy(clean_month)]
 
     print(f"max_variance set at {max_variance:.3g}")
     return(max_variance)
 
 
-def find_solution(sorted, month, SOLUTIONS, max_variance):
+def find_solution(sorted, month, SOLUTIONS, max_variance, data):
     while input("Press Enter: ") in ["Y", "y", ""]:
         while True:
-            fill_duties(sorted, month)
-            if month.find_variance() <= max_variance:
-                max_variance = month.find_variance()
+            clean_month = copy.deepcopy(month)
+            fill_duties(sorted, clean_month, data)
+            if clean_month.find_variance() <= max_variance:
+                max_variance = clean_month.find_variance()
 
                 try:
-                    SOLUTIONS[month.find_variance()]
+                    SOLUTIONS[clean_month.find_variance()]
                 except KeyError:
-                    SOLUTIONS[month.find_variance()] = []
+                    SOLUTIONS[clean_month.find_variance()] = []
 
-                month_copy = copy.deepcopy(month)
+                month_copy = copy.deepcopy(clean_month)
 
-                if month_copy in SOLUTIONS[month.find_variance()]:
+                if month_copy in SOLUTIONS[clean_month.find_variance()]:
                     print("Duplicate found")
                 else:
                     print(f"New solution found! \nmax_variance set at {max_variance:.3g}")
-                    SOLUTIONS[month.find_variance()].append(month_copy)
+                    SOLUTIONS[clean_month.find_variance()].append(month_copy)
                     break

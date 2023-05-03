@@ -76,10 +76,18 @@ class Day:
         if self.pax != None:
             outgoing = self.pax
             month.points[outgoing] -= self.rwd
+        if self.extra == True:
+            return False
         self.pax = incoming
         month.points[incoming] += self.rwd
         month.points = dict(sorted(month.points.items(), key=lambda item: item[1]))
         return True
+    
+    def convert_to_extra(self, incoming, month):
+        self.extra = True
+        month.points[incoming] -= self.rwd
+        self.rwd = 0
+        month.points = dict(sorted(month.points.items(), key=lambda item: item[1]))
 
     def remove_from_avail(self, pax):
         self.avail.remove(pax)

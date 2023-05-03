@@ -19,13 +19,14 @@ def main():
     # Fill 
     sorted = sort_dates(month.cal)
     # Find max_variance
-    max_variance = find_max_variance(sorted, month, SOLUTIONS)
+    max_variance = find_max_variance(sorted, month, SOLUTIONS, data)
+
     # Search for a solution
-    find_solution(sorted, month, SOLUTIONS, max_variance)
+    find_solution(sorted, month, SOLUTIONS, max_variance, data)
 
 
     # print(month.points, month.find_variance())
-    print(SOLUTIONS)
+    print(SOLUTIONS[max_variance][0], SOLUTIONS[max_variance][0].cal)
 
 
 if __name__ == "__main__":
