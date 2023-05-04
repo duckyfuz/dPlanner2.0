@@ -14,7 +14,7 @@ class Month:
         # Initialise .points dictionary
         self.points = self.initialize_points(people, data)
 
-        # Create .cal list, and ammend each day based on the reward points (EVERYBODY is indicated as available for every singe day)
+        # Create .cal list, and ammend each day based on the reward points (EVERYBODY is indicated as available for every single day)
         self.cal = []
         for week in calendar.monthcalendar(YY, MM):
             i = 0
