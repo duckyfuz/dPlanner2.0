@@ -7,12 +7,9 @@ def is_valid(cal, date, incoming):
     """
     Check if incoming is valid, DOES NOT CHECK FOR EXTRAS
     """
-    # Check that incoming is not the same as outgoing
-    if incoming == cal[date - 1].pax:
-        return False
-    
-    # Check that incoming is avail on the date
-    if incoming not in cal[date - 1].avail:
+
+    # Check that incoming is not the same as outgoing and that incoming is avail on the date
+    if incoming == cal[date - 1].pax or incoming not in cal[date - 1].avail:
         return False
     
     # Check the day before
@@ -30,7 +27,7 @@ def is_valid(cal, date, incoming):
 
 def load_data(filename):
     """
-    Takes filename as input and returns a list of people and a dictionary with keys "unavailable", "points", 'to_clear' and 'leftover_duties'
+    Return a dictionary containig data: "unavailable", "points", 'to_clear' and 'leftover_duties'
     """
     
     # Open filename, skip headers line
@@ -40,7 +37,7 @@ def load_data(filename):
 
     data = {}
 
-    # Iterate for each person in f
+    # Iterate for each person
     for row in reader:
         
         # Clean up unavail dates
@@ -60,8 +57,9 @@ def load_data(filename):
         else:
             unavailable_dates = []
             
-        # Ask user for input, only accept >= 0
+        # Ask user to suggest the amount of extras to clear
         to_clear = 0
+
         if int(row[2]) > 0:
             while True: 
                 try: 
@@ -72,7 +70,7 @@ def load_data(filename):
                     continue
                 break
         
-        # Add clean values into data{}
+        # Add clean values into dictionary
         data[row[0]] = {"unavailable": unavailable_dates, 
                         "points": int(row[1]), 
                         "to_clear": to_clear, 
@@ -85,6 +83,10 @@ def load_data(filename):
 
 
 def sort_dates(cal): # ADD PUBLIC HOL INPUT PORTION
+    """
+    Sort all dates by their points
+    """
+
     two_pointers, one_half_pointers, one_pointers = [], [], []
     for day in cal:
         if day.rwd == 1:
@@ -97,13 +99,20 @@ def sort_dates(cal): # ADD PUBLIC HOL INPUT PORTION
 
 
 def fill_duties(sorted, month, data):
+    """
+    Fill up the month with extra duties, then normal duties, then calibrate to decrease variance
+    """
+
+    # Shuffle dates
     one_pointers, two_pointers, one_half_pointers = sorted
     random.shuffle(one_pointers)
     random.shuffle(two_pointers)
     random.shuffle(one_half_pointers)
 
+    # Assign extras
     extras = {}
     total_extras = 0
+
     for pax in data:
         if data[pax]["to_clear"] == 0 and data[pax]["leftover_duties"] == 0:
             continue
@@ -117,99 +126,144 @@ def fill_duties(sorted, month, data):
                     month.cal[date - 1].convert_to_extra(loser, month)
                     break
 
-    # for loser in extras:
-    #     for i in range(extras[loser][0]):
-    #         for date in two_pointers:
-    #             if month.cal[date - 1].swap(loser, month) == True:
-    #                 month.cal[date - 1].convert_to_extra(loser, month)
-    #                 print("HELOO")
-    #                 extras[loser][0] -= 1
-    #                 print("HELOO")
-    #                 break
-    # print(extras)
-
+    # Assign normal duties
     for date in two_pointers:
         for incoming in list(month.points.keys()):
             if month.cal[date - 1].swap(incoming, month) == False:
                 continue
             break
+
     for date in one_half_pointers:
         for incoming in list(month.points.keys()):
             if month.cal[date - 1].swap(incoming, month) == False:
                 continue
             break
+
     for date in one_pointers:
         for incoming in list(month.points.keys()):
             if month.cal[date - 1].swap(incoming, month) == False:
                 continue
             break
 
-    # Calibrate
-    for _ in range(100):
+    # Calibrate 50 times
+    for _ in range(50):
         calibrate(month)
 
 
 def calibrate(month):
+    """
+    Take a duty from the pax with the most points and give it the the pax with the least points
+    """
+
+    # Iterate through every pax, starting from the one with the least points
     for outgoing in reversed(list(month.points.keys())):
+
+        # Create a list of the duties schedued for "outgoing"
         outgoing_duties = []
+
         for day in month.cal:
-            if day.pax != outgoing:
-                continue
-            if day.extra == True:
+
+            # Skip duties assigned to others and extra duties
+            if day.pax != outgoing or day.extra == True:
                 continue
             outgoing_duties.append(day.date)
+
+        # Shuffle "outgoing" de duties
         random.shuffle(outgoing_duties)
+
+        # Find somebody to take over "outgoing"
         swapped = False
+
         for outgoing_duty in outgoing_duties:
+
             for incoming in list(month.points.keys()):
-                if month.cal[outgoing_duty - 1].swap(incoming, month) == False:
-                    continue
-                else: 
+
+                if month.cal[outgoing_duty - 1].swap(incoming, month) == True:
                     swapped = True
                     break
+
+                continue 
+                    
             if swapped == True:
                 break
+
         if swapped == True:
             break
 
 
 def find_max_variance(sorted, month, SOLUTIONS, data):
+    """
+    Generate one solution with the lowest variance possible (might not be the lowest)
+    """
+
+    # Start from 0
     max_variance = 0
     count = 0
+
+    # Repeat while increasing max_variance every 10 tries
     while True:
+
         clean_month = copy.deepcopy(month)
         fill_duties(sorted, clean_month, data)
+
         count += 1
-        if count == 10:
+
+        if count >= 10:
             max_variance += 0.01
             count = 0
+
+        # Break the loop after finding a solution
         if clean_month.find_variance() <= max_variance:
             break
+
+    # Calculate the varience of the solution
     max_variance = clean_month.find_variance()
+
+    # Add a copy of the solution into the SOLUTIONS list
     SOLUTIONS[max_variance] = [copy.deepcopy(clean_month)]
 
+    # Print a message (kinda useless tbh)
     print(f"max_variance set at {max_variance:.3g}")
+
     return(max_variance)
 
 
 def find_solution(sorted, month, SOLUTIONS, max_variance, data):
-    while input("Press Enter: ") in ["Y", "y", ""]:
+    """
+    Search for another unique solution with variance equal to or lower than the previous
+    """
+
+    # Repeat until user is satisfied
+    while True:
+
+        # Press Enter to find another solution, press Ctrl-D to end loop
+        try: 
+            input("Press Enter to find another solution: ")
+        except EOFError:
+            break
+
+        # Repeat until another solution is found
         while True:
+
             clean_month = copy.deepcopy(month)
             fill_duties(sorted, clean_month, data)
+
+            # When a probable solution is found
             if clean_month.find_variance() <= max_variance:
+
                 max_variance = clean_month.find_variance()
 
+                # Create new dictionary key if a lower variance is found
                 try:
                     SOLUTIONS[clean_month.find_variance()]
                 except KeyError:
                     SOLUTIONS[clean_month.find_variance()] = []
 
-                month_copy = copy.deepcopy(clean_month)
-
-                if month_copy in SOLUTIONS[clean_month.find_variance()]:
+                # Add a copy of the solution into SOLUTIONS list ONLY IF it is unique
+                if clean_month in SOLUTIONS[clean_month.find_variance()]:
                     print("Duplicate found")
                 else:
                     print(f"New solution found! \nmax_variance set at {max_variance:.3g}")
-                    SOLUTIONS[clean_month.find_variance()].append(month_copy)
+                    SOLUTIONS[clean_month.find_variance()].append(copy.deepcopy(clean_month))
                     break
+    

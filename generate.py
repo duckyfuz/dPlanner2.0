@@ -24,9 +24,8 @@ def main():
     # Search for a solution
     find_solution(sorted, month, SOLUTIONS, max_variance, data)
 
-
     # print(month.points, month.find_variance())
-    print(SOLUTIONS[max_variance][0], SOLUTIONS[max_variance][0].cal)
+    print(SOLUTIONS[max_variance][2], SOLUTIONS[max_variance][2].cal)
 
 
 if __name__ == "__main__":
