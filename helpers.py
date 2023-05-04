@@ -274,23 +274,25 @@ def write_to_csv(mm, yy, OUTPUT, SOLUTIONS, max_variance, data):
     Create n amount of whatsapp-ready message(s)
     """
 
+    print(f"\nYou have {len(SOLUTIONS[max_variance])} solutions of variance {max_variance:.3g}.")
+
     # Ask user for number n
     while True:
         try: 
             n = int(input("How many would you like to view? "))
-            break
         except:
             continue
-    
-    n = 1 # REMOVE THIS AFTER DONE
+        else:
+            if 0 < n <= len(SOLUTIONS[max_variance]):
+                break
     
     # Repeat n times
-    for _ in range(n):
+    for i in range(n):
 
-        month = SOLUTIONS[max_variance][_]
+        month = SOLUTIONS[max_variance][i]
         
         # Open a new file to write in
-        with open(OUTPUT, 'w', newline='') as f:
+        with open(f"{OUTPUT}_OUTPUT{i + 1}.csv", 'w', newline='') as f:
 
             writer = csv.writer(f)
 

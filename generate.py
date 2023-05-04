@@ -5,7 +5,7 @@ from helpers import *
 MM, YY = 5, 2023
 
 FILENAME = "real_MAY.csv"
-OUTPUT = "real_MAY_output.csv"
+OUTPUT = "output/"
 SOLUTIONS = {}
     
 def main():
@@ -21,8 +21,6 @@ def main():
 
     # Search for a solution
     find_solution(sorted, month, SOLUTIONS, max_variance, data)
-
-    print(f"\nYou have {len(SOLUTIONS[max_variance])} solutions of variance {max_variance:.3g}.")
         
     write_to_csv(MM, YY, OUTPUT, SOLUTIONS, max_variance, data)
 
