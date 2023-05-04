@@ -3,8 +3,7 @@ from dPlanner import Month, Day
 from helpers import *
 # import tkinter
 
-MM = 5
-YY = 2023
+MM, YY = 5, 2023
 
 FILENAME = "real_MAY.csv"
 OUTPUT = "real_MAY_output.csv"
