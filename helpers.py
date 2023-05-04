@@ -292,7 +292,7 @@ def write_to_csv(mm, yy, OUTPUT, SOLUTIONS, max_variance, data):
         month = SOLUTIONS[max_variance][i]
         
         # Open a new file to write in
-        with open(f"{OUTPUT}_OUTPUT{i + 1}.csv", 'w', newline='') as f:
+        with open(f"{OUTPUT}OUTPUT_{i + 1}.csv", 'w', newline='') as f:
 
             writer = csv.writer(f)
 
