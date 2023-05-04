@@ -1,4 +1,3 @@
-import copy
 from dPlanner import Month, Day
 from helpers import *
 # import tkinter
@@ -23,9 +22,9 @@ def main():
     # Search for a solution
     find_solution(sorted, month, SOLUTIONS, max_variance, data)
 
-    # print(month.points, month.find_variance())
-    print(SOLUTIONS[max_variance][2], SOLUTIONS[max_variance][2].cal)
-
+    print(f"\nYou have {len(SOLUTIONS[max_variance])} solutions of variance {max_variance:.3g}.")
+        
+    write_to_csv(MM, YY, OUTPUT, SOLUTIONS, max_variance, data)
 
 if __name__ == "__main__":
     main()

@@ -111,13 +111,11 @@ def fill_duties(sorted, month, data):
 
     # Assign extras
     extras = {}
-    total_extras = 0
 
     for pax in data:
         if data[pax]["to_clear"] == 0 and data[pax]["leftover_duties"] == 0:
             continue
         extras[pax] = [data[pax]["to_clear"], data[pax]["leftover_duties"]]
-        total_extras += data[pax]["to_clear"]
 
     for loser in extras:
         for i in range(extras[loser][0]):
@@ -238,7 +236,7 @@ def find_solution(sorted, month, SOLUTIONS, max_variance, data):
 
         # Press Enter to find another solution, press Ctrl-D to end loop
         try: 
-            input("Press Enter to find another solution: ")
+            input("Press Enter for another solution, Ctrl-D to move on. ")
         except EOFError:
             break
 
@@ -251,6 +249,7 @@ def find_solution(sorted, month, SOLUTIONS, max_variance, data):
             # When a probable solution is found
             if clean_month.find_variance() <= max_variance:
 
+                prev_var = max_variance
                 max_variance = clean_month.find_variance()
 
                 # Create new dictionary key if a lower variance is found
@@ -263,7 +262,74 @@ def find_solution(sorted, month, SOLUTIONS, max_variance, data):
                 if clean_month in SOLUTIONS[clean_month.find_variance()]:
                     print("Duplicate found")
                 else:
-                    print(f"New solution found! \nmax_variance set at {max_variance:.3g}")
+                    print(f"New solution found!")
+                    if max_variance < prev_var:
+                        print(f"max_variance decreased to {max_variance:.3g}")
                     SOLUTIONS[clean_month.find_variance()].append(copy.deepcopy(clean_month))
                     break
     
+
+def write_to_csv(mm, yy, OUTPUT, SOLUTIONS, max_variance, data):
+    """
+    Create n amount of whatsapp-ready message(s)
+    """
+
+    # Ask user for number n
+    while True:
+        try: 
+            n = int(input("How many would you like to view? "))
+            break
+        except:
+            continue
+    
+    n = 1 # REMOVE THIS AFTER DONE
+    
+    # Repeat n times
+    for _ in range(n):
+
+        month = SOLUTIONS[max_variance][_]
+        
+        # Open a new file to write in
+        with open(OUTPUT, 'w', newline='') as f:
+
+            writer = csv.writer(f)
+
+            # Write introductory lines
+            writer.writerow(["Hello all", ""])
+            writer.writerow(["These are the duties for the " + str(mm) + "th month of " + str(yy) + ":"])
+            writer.writerow([])
+
+            # Iterate through each day and add a new line for each day
+            for day in month.cal:
+                writer.writerow([f"{day.date}. {day.pax}"])
+                # writer.writerow([str(day.date) + ". " + day.pax])
+            writer.writerow([])
+
+            # Add introcutory line
+            writer.writerow(["As of now", ""])
+
+            # This portion was copied from fill_data(), might want to clean up later
+            extras = {} 
+            for pax in data:
+                if data[pax]["to_clear"] == 0 and data[pax]["leftover_duties"] == 0:
+                    continue
+                extras[pax] = data[pax]["to_clear"] + data[pax]["leftover_duties"]
+
+            for day in month.cal:
+                if day.extra == False:
+                    continue
+                extras[day.pax] -= 1
+
+            # Iterate through each person and add a new line for each person with outstanding extras
+            for pax in extras:
+                if extras[pax] == 0:
+                    continue
+                elif extras[pax] == 1:
+                    writer.writerow([f"{pax} still has {extras[pax]} outstanding extra to clear."])
+                else:      
+                    writer.writerow([f"{pax} still has {extras[pax]} outstanding extras to clear."])
+
+            writer.writerow([])
+            writer.writerow(["At the end of the month", ""])
+            for pax in month.points:
+                writer.writerow([pax + ": " + str(month.points[pax]) + "pts"])
