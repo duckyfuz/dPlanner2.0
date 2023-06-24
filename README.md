@@ -22,8 +22,8 @@ Friday: 1.5 points
 Saturday, Sunday: 2 points
 
 ### Features: 
-(1) Extras - Punishments carried out on Saturday / Sunday. Clearing an extra means forfeiting the 2 points that usually come with doing duty on the day. 
-(2) Extras-to-be-done - Individuals do not have to clear all their extras in one month. Each person can indicate how many extras they want to clear in a single month. If the program is unable to clear all, it will report the balance in its output.
+(1) Extras - Punishments carried out on Saturday / Sunday. Clearing an extra means forfeiting the 2 points that usually come with doing duty on the day.  
+(2) Extras-to-be-done - Individuals do not have to clear all their extras in one month. Each person can indicate how many extras they want to clear in a single month. If the program is unable to clear all, it will report the balance in its output.  
 (3) Points History - Points awarded from previous months are taken into account when planning.   
 (4) Points Equity - The variance of all the points will be kept to a minumum.  
 (5) Availability - Duty schedue will be planned around each person's availability. 
